@@ -13,7 +13,6 @@ CKDIR /Volumes/VOL2/DKA/dlwk/_DL
 CKDIR $BSDIR/zzwk1/
 CKDIR $BSDIR/auto
 CKDIR $BSDIR/zzNG1
-## CKDIR $BSDIR/zz
 CKDIR $BSDIR/zzNG1
 cd
 
