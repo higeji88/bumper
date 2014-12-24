@@ -1,0 +1,25 @@
+## １
+BSDIR=/Volumes/VOL2/DKA/dktp_z/dktp_zip/zz_auto/
+
+CKDIR(){
+cd $1
+KEKA=$?
+if [ $KEKA -ne 0 ]; then
+ exit 1
+fi 
+}
+
+CKDIR /Volumes/VOL2/DKA/dlwk/_DL
+CKDIR $BSDIR/zzwk1/
+CKDIR $BSDIR/auto
+CKDIR $BSDIR/zzNG1
+## CKDIR $BSDIR/zz
+CKDIR $BSDIR/zzNG1
+cd
+
+## １
+## 環境変数と関数の設定
+## ディレクトリ有無の確認
+## 主要なディレクトリの有無を確認する。
+## 「無い」場合は、エラーリターンで抜ける。
+

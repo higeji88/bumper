@@ -1,0 +1,105 @@
+## 002
+## 1
+BSDIR=/Volumes/VOL2/DKA/dktp_z/dktp_zip/zz_auto/
+WKDIR=$BSDIR/zzwk1/
+NGDIR=$BSDIR/zzNG1
+ZFILE=0
+LOGFILE=$BSDIR/syori_log.txt
+
+
+## 2
+FUNC1(){
+ _CNT=0
+ _TIME=2
+ _KLPID=
+ _PSPID=
+  HENSU(){ echo $ZFILE $_CNT $_TIME K $_KLPID x P $_PSPID `date` ;}
+
+ sleep 1
+ _KLPID=` ps -U toy | grep -v "grep" | grep -e "Expander .*$ZFILE.*\...[pr]$" | cut -b 1-5 `
+echo "00 `HENSU`"  >> $LOGFILE
+echo `ps -U toy | grep -v "grep" | grep -e "Expander"` >> $LOGFILE
+
+
+ for (( _CNT=1; _CNT<60; _CNT++ )){
+   sleep $_TIME
+ _PSPID=` ps -U toy | grep -v "grep" | grep -e "Expander .*$ZFILE.*\...[pr]$" | cut -b 1-5 `
+echo 01 `HENSU` >> $LOGFILE
+   if [ $_PSPID = $_KLPID ]; then
+echo 02 `HENSU` >> $LOGFILE
+     else
+    _CNT=180
+echo 03 `HENSU` >> $LOGFILE
+   fi
+}
+   if [ $_PSPID = $_KLPID ] ; then
+    kill -15 $_KLPID
+echo 11 `HENSU`  >> $LOGFILE
+    sleep 3
+    ps -p $KLPID | grep -e "Expander.app"
+     if [ $? -eq 0 ] ; then
+      kill -3 $_KLPID
+echo 15 `HENSU`  >> $LOGFILE
+      sleep 1
+     fi
+   else
+echo 19 `HENSU`  >> $LOGFILE
+   fi
+echo "FUNC1 $ZFILE end `date` " >> $LOGFILE
+
+}
+
+## 3
+cd $WKDIR
+  echo "
+"  >> $LOGFILE
+date >> $LOGFILE
+pwd >> $LOGFILE
+ ls -l *.zip *.rar  >> $LOGFILE
+for ZFILE in `ls *.zip *.rar | cut -c1-4`
+do
+  echo "
+"  >> $LOGFILE
+  date   >> $LOGFILE
+  ls -al $ZFILE*  >> $LOGFILE
+  FUNC1 &
+  "/Applications/StuffIt/StuffIt Expander.app/Contents/MacOS/StuffIt Expander"  ./$ZFILE*
+  RTN=$?
+  if [ $RTN -ne 0 ] ; then
+      mv $WKDIR/$ZFILE* $NGDIR/.
+echo "2 mvNG `date` ">> $LOGFILE
+sleep 4
+     else
+echo "3 OK `date` ">> $LOGFILE
+sleep 2
+   fi
+done
+sleep 5
+ls -ald *
+echo end end end `date` >> $LOGFILE
+
+## 20101210
+## zip,rarファイルをコマンドライン指定で実行する。
+## 成功した場合は次のファイルを解凍する。
+## 失敗した場合は、別のフォルダに移動する。
+
+## 1
+## 変数の設定
+## ログ出力先の追加。
+## 使用しない場合は、/dev/null　を指定する。
+
+## 2
+## 関数の設定
+## 解凍コマンド実行直前に実行する。
+## 直後の解凍コマンドのプロセスIDを取得する。
+## 一定時間監視する。
+## 監視中にプロセスidが消えれば、解凍正常として終了する。
+## 経過後もプロセスが残っている場合は、解凍エラーとしてkillする。
+
+## zip,rarファイルを１ファイルずつ選択する。
+## 関数実行直後に、解凍コマンドを実行する。
+## 正常終了時は、次のファイルを解凍する。
+## 関数によるプロセスkillのエラー時は、該当のファイルを移動した後に
+## 次のファイルを解凍する。
+## 対象ファイルがなくなるまで繰り返す。
+
